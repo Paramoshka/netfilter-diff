@@ -1,6 +1,8 @@
 mod models;
 use models::DetectBackend;
-use std::{fmt::format, process::Command};
+use std::process::Command;
+
+use crate::models::mark_nft;
 
 fn detect_netfilter_backend() -> Result<DetectBackend, String> {
     let out = Command::new("iptables")
@@ -10,10 +12,18 @@ fn detect_netfilter_backend() -> Result<DetectBackend, String> {
 
     if !out.status.success() {
         return Err(format!("iptables -V exit={}", out.status));
-    }else {
-        return Ok(DetectBackend::NftOnly);
     }
 
+    let s = String::from_utf8_lossy(&out.stdout);
+
+    if s.contains(mark_nft) {
+        Ok(DetectBackend::IptablesNfTables)
+    } else {
+        Ok(DetectBackend::IptablesLegacy)
+    }
+}
 fn main() {
-    // todo
+    if let Ok(nf_backend) = detect_netfilter_backend() {
+        // TODO
+    };
 }

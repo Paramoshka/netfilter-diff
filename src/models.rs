@@ -4,3 +4,5 @@ pub enum DetectBackend {
     IptablesLegacy,
     IptablesNfTables,
 }
+
+pub const mark_nft: &str = "nf_tables";
