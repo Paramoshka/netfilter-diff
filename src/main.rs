@@ -23,7 +23,15 @@ fn detect_netfilter_backend() -> Result<DetectBackend, String> {
     }
 }
 fn main() {
-    if let Ok(nf_backend) = detect_netfilter_backend() {
-        // TODO
-    };
+    match detect_netfilter_backend() {
+        Ok(DetectBackend::IptablesNfTables) => {}
+
+        Ok(DetectBackend::IptablesLegacy) => {}
+
+        Ok(DetectBackend::NftOnly) => {}
+
+        Err(e) => {
+            eprintln!("Failed get nft backend: {e}")
+        }
+    }
 }
